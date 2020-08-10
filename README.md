@@ -1,6 +1,8 @@
 # blood_app
 
-A new Flutter project.
+A new Flutter project for helping people to reach a donor as fast as possible. This app is connected to Firebase & user login is validated by Firebase authentication.
+
+This app is not completed yet. Some pictures of user interface of the app is added to UI.pdf file.
 
 ## Getting Started
 
