@@ -1,0 +1,42 @@
+[
+    {
+      "placeName": "Badhan",
+      "address": "TSC, Dhaka University",
+      "pnum": "Phone: 8629042, Mobile:01711025876"
+    },
+    {
+      "placeName": "Islami Bank Hospital",
+      "address": "Kakril, Dhaka",
+      "pnum": "Tel:8317090, 8321495"
+    },
+    {
+      "placeName": "Quantum Lab",
+      "address": "119, Shantinagar, Dhaka",
+      "pnum": "Tel: 9351969, 8322987, Mobile:01714010869"
+    },
+    {
+      "placeName": "Red Crescent Blood Center",
+      "address": "7/5, Aurangzeb Road, Mohammadpur, Dhaka",
+      "pnum": "Tel: 9116563, 8121497"
+    },
+    {
+        "placeName": "Sandhani",
+        "address": "Sir Salimullah Medical College Hospital, Dhaka",
+        "pnum": "Tel:7319123, 9668690, 01819284878"
+      },
+      {
+        "placeName": "Sandhani",
+        "address": "Bangladesh Medical College, Dhanmondi, Dhaka",
+        "pnum": "Tel:0152371531, 0152423441"
+      },
+      {
+        "placeName": "Sandhani",
+        "address": "Dental College, Mirpur 14, Dhaka",
+        "pnum": "Tel: 9011887"
+      },
+      {
+        "placeName": "Sandhani",
+        "address": "Dhaka Medical College Hospital, Dhaka",
+        "pnum": "Tel: 9668690, 8616744, 9663429, 01819284878"
+      }
+  ]
