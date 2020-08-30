@@ -6,22 +6,7 @@ class BloodBanks extends StatefulWidget {
   _BloodBanksState createState() => _BloodBanksState();
 }
 
-class _BloodBanksState extends State<BloodBanks>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+class _BloodBanksState extends State<BloodBanks> {
   @override
   Widget build(BuildContext context) {
     Future<List<Widget>> createList() async {
@@ -72,10 +57,12 @@ class _BloodBanksState extends State<BloodBanks>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal[400],
+        elevation: 5.0,
         title: Text(
           "List of Blood Banks",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
+        centerTitle: true,
       ),
       body: Container(
         color: Colors.white24,

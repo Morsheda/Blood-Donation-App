@@ -1,11 +1,28 @@
 import 'package:blood_app/screens/authenticate/authenticate.dart';
+import 'package:blood_app/screens/home/snackbar.dart';
 import 'package:blood_app/screens/pages/blood_bank.dart';
+import 'package:blood_app/screens/pages/home_page.dart';
 import 'package:blood_app/services/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
-  final Authservice _auth = Authservice();
+class Home extends StatefulWidget {
+  final docId;
+  Home({Key key, this.docId}) : super(key: key);
+  @override
+  _HomeState createState() => _HomeState(this.docId);
+}
 
+class _HomeState extends State<Home> {
+  var docId;
+  _HomeState(this.docId);
+  final Authservice _auth = Authservice();
+  String name;
+  String age;
+  String pn;
+  String add;
+  String ld;
+  String email;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,71 +69,114 @@ class Home extends StatelessWidget {
             SizedBox(
               height: 40,
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Name:',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Pnone number:',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Address:',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Date of last donation:',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Email:',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    FlatButton(
-                      onPressed: () {},
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Edit',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17.0,
-                            color: Colors.black),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black, width: 2.0),
-                          borderRadius: new BorderRadius.circular(12.0)),
-                    ),
-                  ]),
+            FutureBuilder(
+              future: _fetch(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done)
+                  return Text("Loading data...Please wait");
+                return Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 40.0, vertical: 8.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name: $name',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Age: $age',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Pnone number: $pn',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Address: $add',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 16.0,
+                              color: Colors.blue[600],
+                            ),
+                            InkWell(
+                                onTap: () {
+                                  //setting the blood group,phone no. and geopoints under collection 'markers'/'docId'
+                                  //showing snackbar
+                                  GlobalSnackbar.show(context,
+                                      "Location has been set successfully");
+                                },
+                                child: Text('Set your location on Google Map',
+                                    style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: Colors.blue[600],
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold))),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Date of last donation: $ld',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Email: $email',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        FlatButton(
+                          onPressed: () {},
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(
+                            'Edit',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17.0,
+                                color: Colors.black),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.black, width: 2.0),
+                              borderRadius: new BorderRadius.circular(12.0)),
+                        ),
+                      ]),
+                );
+              },
             ),
           ],
         ),
@@ -144,7 +204,10 @@ class Home extends StatelessWidget {
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
               },
             ),
             ListTile(
@@ -242,5 +305,22 @@ class Home extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _fetch() async {
+    await Firestore.instance
+        .collection('users')
+        .document(docId)
+        .get()
+        .then((ds) {
+      name = ds.data['name'];
+      age = ds.data['age'];
+      pn = ds.data['mobile'];
+      add = ds.data['address'];
+      ld = ds.data['last date of donation'];
+      email = ds.data['email'];
+    }).catchError((e) {
+      print(e);
+    });
   }
 }

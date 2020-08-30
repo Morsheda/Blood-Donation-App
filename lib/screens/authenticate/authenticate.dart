@@ -6,22 +6,7 @@ class Authenticate extends StatefulWidget {
   _AuthenticateState createState() => _AuthenticateState();
 }
 
-class _AuthenticateState extends State<Authenticate>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

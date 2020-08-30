@@ -17,7 +17,13 @@ class Authservice {
 
   //get current user
   Future getCurrentUser() async {
-    return await _auth.currentUser();
+    try {
+      FirebaseUser user = await _auth.currentUser();
+      return _userFromFirebaseUser(user);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 
   //sing in anon

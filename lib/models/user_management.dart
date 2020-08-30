@@ -3,6 +3,7 @@ class MyUsers {
   final String name;
   final String age;
   final String bloodGroup;
+  final String lastDate;
   final String mobile;
   final String address;
   final String email;
@@ -13,6 +14,7 @@ class MyUsers {
       this.name,
       this.age,
       this.bloodGroup,
+      this.lastDate,
       this.mobile,
       this.address,
       this.email,
@@ -24,6 +26,7 @@ class MyUsers {
       'name': this.name,
       'age': this.age,
       'bloodGroup': this.bloodGroup,
+      'last date of donation': this.lastDate,
       'mobile': this.mobile,
       'address': this.address,
       'email': this.email,

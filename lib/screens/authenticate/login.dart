@@ -1,4 +1,4 @@
-//import 'package:blood_app/models/user_management.dart';
+import 'package:blood_app/models/user_management.dart';
 import 'package:blood_app/screens/home/home.dart';
 import 'package:blood_app/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +22,7 @@ class SignUpScreenState extends State<SignUpScreen> {
   String _name;
   String _age;
   String _bloodGroup;
+  String _lastDate;
   String _mobile;
   String _address;
   String _email;
@@ -33,13 +34,33 @@ class SignUpScreenState extends State<SignUpScreen> {
   final Authservice _auth = Authservice();
   Firestore db = Firestore.instance;
 
-  // Future<void> saveUser(final user) async {
+  // Future<void> saveUser(user) async {
   //   db.collection('users').add(user).then((DocumentReference document) {
   //     print(document.documentID);
   //   }).catchError((e) {
   //     print(e);
   //   });
   // }
+
+  Future<void> saveUser(MyUsers user, docref) async {
+    db
+        .collection('users')
+        .document(docref)
+        .setData({
+          'name': user.name,
+          'age': user.age,
+          'bloodGroup': user.bloodGroup,
+          'last date of donation': user.lastDate,
+          'mobile': user.mobile,
+          'address': user.address,
+          'email': user.email,
+          'password': user.password
+        })
+        .then((value) {})
+        .catchError((e) {
+          print(e);
+        });
+  }
 
   Widget _buildName() {
     return TextFormField(
@@ -83,6 +104,24 @@ class SignUpScreenState extends State<SignUpScreen> {
       onChanged: (value) {
         setState(() {
           _bloodGroup = value;
+        });
+      },
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'This field is required.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildLastDonation() {
+    return TextFormField(
+      decoration: InputDecoration(hintText: 'Last date of blood donation'),
+      keyboardType: TextInputType.text,
+      onChanged: (value) {
+        setState(() {
+          _lastDate = value;
         });
       },
       validator: (value) {
@@ -150,7 +189,6 @@ class SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildPassword() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(hintText: 'Password'),
       keyboardType: TextInputType.visiblePassword,
       onChanged: (value) {
@@ -169,7 +207,6 @@ class SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildPassworConfirmation() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(hintText: 'Confirm Password'),
       keyboardType: TextInputType.visiblePassword,
       onChanged: (String value) {
@@ -193,19 +230,48 @@ class SignUpScreenState extends State<SignUpScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              _buildName(),
-              _buildAge(),
-              _buildBloodGroup(),
-              _buildMobile(),
-              _buildAddress(),
-              _buildEmail(),
-              _buildPassword(),
-              _buildPassworConfirmation(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildName(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildAge(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildBloodGroup(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildLastDonation(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildMobile(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildAddress(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildEmail(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildPassword(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildPassworConfirmation(),
+              ),
               SizedBox(height: 100),
               RaisedButton(
-                padding: EdgeInsets.all(15.0),
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 80),
+                elevation: 7.0,
                 child: Text('SIGN UP', style: TextStyle(fontSize: 18.0)),
-                textColor: Colors.black,
+                textColor: Colors.white,
                 color: Colors.blue[300],
                 shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(12.0)),
@@ -213,28 +279,31 @@ class SignUpScreenState extends State<SignUpScreen> {
                   if (!_formKey.currentState.validate()) {
                     return;
                   }
-                  //eituk notun
-                  // final MyUsers user = MyUsers(
-                  //     name: _name,
-                  //     age: _age,
-                  //     bloodGroup: _bloodGroup,
-                  //     mobile: _mobile,
-                  //     address: _address,
-                  //     email: _email,
-                  //     password: _password);
-                  // saveUser(user.toMap());
-                  //upto this
                   _formKey.currentState.save();
                   dynamic result = await _auth.registerWithEmailAndPassword(
                       _email, _password);
+                  //eituk notun
+                  final MyUsers user = MyUsers(
+                      name: _name,
+                      age: _age,
+                      bloodGroup: _bloodGroup,
+                      lastDate: _lastDate,
+                      mobile: _mobile,
+                      address: _address,
+                      email: _email,
+                      password: _password);
+                  saveUser(user, result.uid);
+                  //upto this
                   if (result == null) {
                     print('error signing up');
                     setState(() => err = 'Please Enter Valid Informations');
                   } else {
                     print('Successfully signed up');
+                    print(result.uid);
                     print(_name);
                     print(_age);
                     print(_bloodGroup);
+                    print(_lastDate);
                     print(_mobile);
                     print(_address);
                     print(_email);
@@ -242,7 +311,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                     print(_passwordConfirmation);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Home()),
+                      MaterialPageRoute(
+                          builder: (context) => Home(docId: result.uid)),
                     );
                   }
                 },
@@ -291,7 +361,6 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildPassword() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(hintText: 'Password'),
       keyboardType: TextInputType.visiblePassword,
       onChanged: (String value) {
@@ -315,13 +384,20 @@ class LoginScreenState extends State<LoginScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              _buildEmail(),
-              _buildPassword(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildEmail(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _buildPassword(),
+              ),
               SizedBox(height: 100),
               RaisedButton(
-                padding: EdgeInsets.all(15.0),
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 80),
+                elevation: 7.0,
                 child: Text('LOGIN', style: TextStyle(fontSize: 18.0)),
-                textColor: Colors.black,
+                textColor: Colors.white,
                 color: Colors.blue[300],
                 shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(12.0)),
@@ -337,11 +413,13 @@ class LoginScreenState extends State<LoginScreen> {
                     setState(() => err = 'Invalid User or Password');
                   } else {
                     print('Successfully logged in');
+                    print(result.uid);
                     print(_email);
                     print(_password);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Home()),
+                      MaterialPageRoute(
+                          builder: (context) => Home(docId: result.uid)),
                     );
                   }
                 },
