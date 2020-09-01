@@ -2,6 +2,7 @@ import 'package:blood_app/screens/authenticate/authenticate.dart';
 import 'package:blood_app/screens/home/snackbar.dart';
 import 'package:blood_app/screens/pages/blood_bank.dart';
 import 'package:blood_app/screens/pages/home_page.dart';
+import 'package:blood_app/screens/pages/settings.dart';
 import 'package:blood_app/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -280,7 +281,10 @@ class _HomeState extends State<Home> {
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold)),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Settings()),
+                );
               },
             ),
             ListTile(
