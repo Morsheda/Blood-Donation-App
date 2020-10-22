@@ -5,6 +5,7 @@ import 'package:blood_app/screens/pages/home_page.dart';
 import 'package:blood_app/screens/pages/settings.dart';
 import 'package:blood_app/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -312,19 +313,21 @@ class _HomeState extends State<Home> {
   }
 
   _fetch() async {
-    await Firestore.instance
-        .collection('users')
-        .document(docId)
-        .get()
-        .then((ds) {
-      name = ds.data['name'];
-      age = ds.data['age'];
-      pn = ds.data['mobile'];
-      add = ds.data['address'];
-      ld = ds.data['last date of donation'];
-      email = ds.data['email'];
-    }).catchError((e) {
-      print(e);
-    });
+    final firebaseUser = await FirebaseAuth.instance.currentUser();
+    if (firebaseUser != null)
+      await Firestore.instance
+          .collection('users')
+          .document(docId)
+          .get()
+          .then((ds) {
+        name = ds.data['name'];
+        age = ds.data['age'];
+        pn = ds.data['mobile'];
+        add = ds.data['address'];
+        ld = ds.data['last date of donation'];
+        email = ds.data['email'];
+      }).catchError((e) {
+        print(e);
+      });
   }
 }
