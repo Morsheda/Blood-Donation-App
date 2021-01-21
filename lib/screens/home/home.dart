@@ -7,6 +7,7 @@ import 'package:blood_app/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Home extends StatefulWidget {
   final docId;
@@ -16,15 +17,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Position curLoc;
   var docId;
   _HomeState(this.docId);
   final Authservice _auth = Authservice();
   String name;
   String age;
   String pn;
+  String bg;
   String add;
   String ld;
   String email;
+
+  void initState() {
+    super.initState();
+    Geolocator().getCurrentPosition().then((value) {
+      setState(() {
+        curLoc = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,9 +142,20 @@ class _HomeState extends State<Home> {
                             InkWell(
                                 onTap: () {
                                   //setting the blood group,phone no. and geopoints under collection 'markers'/'docId'
+                                  Firestore.instance.collection('markers').add({
+                                    'bg': bg,
+                                    'location': new GeoPoint(
+                                        curLoc.latitude, curLoc.longitude),
+                                    'pn': pn
+                                  }).then((value) {
+                                    GlobalSnackbar.show(context,
+                                        "Location has been set successfully");
+                                  }).catchError((e) {
+                                    print(e);
+                                  });
                                   //showing snackbar
-                                  GlobalSnackbar.show(context,
-                                      "Location has been set successfully");
+                                  // GlobalSnackbar.show(context,
+                                  //     "Location has been set successfully");
                                 },
                                 child: Text('Set your location on Google Map',
                                     style: TextStyle(
@@ -322,6 +346,7 @@ class _HomeState extends State<Home> {
           .then((ds) {
         name = ds.data['name'];
         age = ds.data['age'];
+        bg = ds.data['bloodGroup'];
         pn = ds.data['mobile'];
         add = ds.data['address'];
         ld = ds.data['last date of donation'];
